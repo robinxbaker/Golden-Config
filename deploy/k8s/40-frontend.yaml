@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gc-frontend
+  namespace: golden-config
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gc-frontend
+  template:
+    metadata:
+      labels:
+        app: gc-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/your-org/golden-config-frontend:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gc-frontend
+  namespace: golden-config
+spec:
+  selector:
+    app: gc-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gc-ingress
+  namespace: golden-config
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: goldenconfig.example.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: gc-backend
+                port:
+                  number: 8000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gc-frontend
+                port:
+                  number: 80

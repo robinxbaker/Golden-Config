@@ -1,0 +1,42 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.venv/
+venv/
+.env
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+
+# ---- Node / frontend ----
+node_modules/
+frontend/dist/
+frontend/coverage/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ---- Editors / OS ----
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---- Secrets / local ----
+*.local
+secrets/
+*.pem
+*.key
+
+# ---- Docker / data ----
+postgres-data/
+redis-data/
+grafana-data/

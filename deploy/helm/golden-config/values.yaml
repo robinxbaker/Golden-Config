@@ -1,0 +1,49 @@
+# Default values for the golden-config chart.
+
+image:
+  registry: ghcr.io/your-org
+  backend: golden-config-backend
+  frontend: golden-config-frontend
+  tag: latest
+  pullPolicy: IfNotPresent
+
+backend:
+  replicas: 2
+  resources:
+    requests: { cpu: 100m, memory: 256Mi }
+    limits: { cpu: 500m, memory: 512Mi }
+
+worker:
+  replicas: 2
+
+frontend:
+  replicas: 2
+
+postgres:
+  enabled: true
+  storage: 5Gi
+
+redis:
+  enabled: true
+
+config:
+  environment: production
+  logLevel: INFO
+  apiPrefix: /api/v1
+  corsOrigins: "https://goldenconfig.example.com"
+  otelEnabled: false
+
+# Provide real values via --set or a secrets manager; do NOT commit production secrets.
+secrets:
+  secretKey: "replace-me"
+  credentialEncryptionKey: "replace-me"
+  postgresUser: goldenconfig
+  postgresPassword: "replace-me"
+  firstAdminUsername: admin
+  firstAdminEmail: admin@goldenconfig.example.com
+  firstAdminPassword: "replace-me"
+
+ingress:
+  enabled: true
+  className: nginx
+  host: goldenconfig.example.com

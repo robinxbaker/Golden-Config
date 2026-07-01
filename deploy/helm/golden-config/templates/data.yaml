@@ -1,0 +1,88 @@
+{{- if .Values.postgres.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gc-postgres
+  labels: {{- include "gc.labels" . | nindent 4 }}
+spec:
+  serviceName: gc-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gc-postgres
+  template:
+    metadata:
+      labels:
+        app: gc-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          envFrom:
+            - secretRef:
+                name: gc-secrets
+          env:
+            - name: POSTGRES_DB
+              value: goldenconfig
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.postgres.storage }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gc-postgres
+  labels: {{- include "gc.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: gc-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+{{- end }}
+{{- if .Values.redis.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gc-redis
+  labels: {{- include "gc.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gc-redis
+  template:
+    metadata:
+      labels:
+        app: gc-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          args: ["redis-server", "--appendonly", "yes"]
+          ports:
+            - containerPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gc-redis
+  labels: {{- include "gc.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: gc-redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+{{- end }}
