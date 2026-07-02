@@ -33,6 +33,12 @@ async def _run_backup(job_id: str, name: str) -> None:
         await db.commit()
 
         device = await device_service.get(db, job.device_id)
+        if device is None:
+            job.status = JobStatus.FAILED
+            job.error = f"Device {job.device_id} no longer exists."
+            await db.commit()
+            logger.warning("backup_failed", job_id=job_id, error=job.error)
+            return
         try:
             target = device_service.build_target(device)
             content = get_driver(target).backup()
@@ -69,6 +75,16 @@ async def _run_apply(job_id: str, dry_run: bool) -> None:
 
         device = await device_service.get(db, job.device_id)
         config = await db.get(ConfigFile, job.config_file_id)
+        if device is None or config is None:
+            job.status = JobStatus.FAILED
+            job.error = (
+                f"Device {job.device_id} no longer exists."
+                if device is None
+                else f"Config {job.config_file_id} no longer exists."
+            )
+            await db.commit()
+            logger.warning("apply_failed", job_id=job_id, error=job.error)
+            return
         try:
             target = device_service.build_target(device)
             result = get_driver(target).apply(config.content, dry_run=dry_run)
@@ -86,7 +102,6 @@ async def _run_apply(job_id: str, dry_run: bool) -> None:
 def _format_for(device) -> str:
     """Pick the stored config format based on the device's driver metadata."""
     from app.drivers.registry import get_driver_class
-
     from app.models import ConfigFormat
 
     return ConfigFormat(get_driver_class(device.platform).config_format)

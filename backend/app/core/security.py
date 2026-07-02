@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+import uuid
+from datetime import UTC, datetime, timedelta
 from enum import StrEnum
 from typing import Any
 
@@ -30,12 +31,12 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def _create_token(
-    subject: str | int,
+    subject: str | int | uuid.UUID,
     token_type: TokenType,
     expires_delta: timedelta,
     extra_claims: dict[str, Any] | None = None,
 ) -> str:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     payload: dict[str, Any] = {
         "sub": str(subject),
         "type": token_type.value,
@@ -47,7 +48,7 @@ def _create_token(
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
-def create_access_token(subject: str | int, **extra_claims: Any) -> str:
+def create_access_token(subject: str | int | uuid.UUID, **extra_claims: Any) -> str:
     return _create_token(
         subject,
         TokenType.ACCESS,
@@ -56,7 +57,7 @@ def create_access_token(subject: str | int, **extra_claims: Any) -> str:
     )
 
 
-def create_refresh_token(subject: str | int) -> str:
+def create_refresh_token(subject: str | int | uuid.UUID) -> str:
     return _create_token(
         subject,
         TokenType.REFRESH,

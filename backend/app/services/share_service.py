@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -94,7 +94,7 @@ async def decide(db: AsyncSession, request: ShareRequest, *, accept: bool) -> Sh
         raise ShareError("This request has already been answered.")
 
     request.status = ShareStatus.ACCEPTED if accept else ShareStatus.DENIED
-    request.responded_at = datetime.now(timezone.utc)
+    request.responded_at = datetime.now(UTC)
 
     if accept:
         db.add(

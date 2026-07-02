@@ -1,0 +1,17 @@
+{$DOMAIN} {
+	encode gzip zstd
+
+	# API, docs, and metrics -> FastAPI backend
+	@backend path /api/* /openapi.json /docs* /redoc* /metrics
+	handle @backend {
+		reverse_proxy backend:8000
+	}
+
+	# Everything else -> React SPA (nginx). SPA fallback handled inside nginx.
+	handle {
+		reverse_proxy frontend:80
+	}
+
+	# Let's Encrypt certificate (email used for expiry notices)
+	tls {$ACME_EMAIL}
+}

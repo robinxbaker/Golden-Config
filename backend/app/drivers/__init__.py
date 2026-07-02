@@ -11,6 +11,8 @@ Drivers self-register with the :data:`registry` at import time, so adding suppor
 new platform is just a matter of dropping in a new subclass.
 """
 
+# Import driver modules for their registration side effects.
+from app.drivers import rest_drivers, ssh_drivers  # noqa: E402,F401
 from app.drivers.base import BaseDriver, DeviceTarget, DriverError
 from app.drivers.registry import (
     DriverMeta,
@@ -19,9 +21,6 @@ from app.drivers.registry import (
     list_drivers,
     registry,
 )
-
-# Import driver modules for their registration side effects.
-from app.drivers import rest_drivers, ssh_drivers  # noqa: E402,F401
 
 __all__ = [
     "BaseDriver",

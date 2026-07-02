@@ -39,7 +39,7 @@ class Device(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     owner_id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
-    owner: Mapped["User"] = relationship(back_populates="devices")
+    owner: Mapped[User] = relationship(back_populates="devices")
 
     def __repr__(self) -> str:  # pragma: no cover
         return f"<Device {self.name} [{self.platform}]>"

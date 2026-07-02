@@ -39,6 +39,6 @@ class Job(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     log: Mapped[str | None] = mapped_column(Text, nullable=True)
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    device: Mapped["Device"] = relationship()
-    config_file: Mapped["ConfigFile | None"] = relationship()
-    user: Mapped["User"] = relationship()
+    device: Mapped[Device] = relationship()
+    config_file: Mapped[ConfigFile | None] = relationship()
+    user: Mapped[User] = relationship()

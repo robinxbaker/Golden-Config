@@ -7,7 +7,6 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.api.deps import CurrentUser, DbSession, require_admin
-from app.models import User
 from app.schemas.user import UserCreate, UserPublic, UserRead, UserUpdate
 from app.services import audit_service, user_service
 

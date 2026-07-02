@@ -38,6 +38,6 @@ class ShareRequest(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     message: Mapped[str | None] = mapped_column(String(512), nullable=True)
     responded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
-    config_file: Mapped["ConfigFile"] = relationship()
-    requester: Mapped["User"] = relationship(foreign_keys=[requester_id])
-    owner: Mapped["User"] = relationship(foreign_keys=[owner_id])
+    config_file: Mapped[ConfigFile] = relationship()
+    requester: Mapped[User] = relationship(foreign_keys=[requester_id])
+    owner: Mapped[User] = relationship(foreign_keys=[owner_id])

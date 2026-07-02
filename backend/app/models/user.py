@@ -27,10 +27,10 @@ class User(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
-    devices: Mapped[list["Device"]] = relationship(
+    devices: Mapped[list[Device]] = relationship(
         back_populates="owner", cascade="all, delete-orphan"
     )
-    config_files: Mapped[list["ConfigFile"]] = relationship(
+    config_files: Mapped[list[ConfigFile]] = relationship(
         back_populates="owner", cascade="all, delete-orphan"
     )
 

@@ -39,8 +39,8 @@ class ConfigFile(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         Uuid(as_uuid=True), ForeignKey("devices.id", ondelete="SET NULL"), nullable=True
     )
 
-    owner: Mapped["User"] = relationship(back_populates="config_files")
-    grants: Mapped[list["ConfigShareGrant"]] = relationship(
+    owner: Mapped[User] = relationship(back_populates="config_files")
+    grants: Mapped[list[ConfigShareGrant]] = relationship(
         back_populates="config_file", cascade="all, delete-orphan"
     )
 
@@ -63,4 +63,4 @@ class ConfigShareGrant(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         Uuid(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
 
-    config_file: Mapped["ConfigFile"] = relationship(back_populates="grants")
+    config_file: Mapped[ConfigFile] = relationship(back_populates="grants")
