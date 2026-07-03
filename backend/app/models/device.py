@@ -27,7 +27,7 @@ class Device(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     host: Mapped[str] = mapped_column(String(255), nullable=False)
     port: Mapped[int] = mapped_column(Integer, default=22, nullable=False)
     transport: Mapped[TransportType] = mapped_column(
-        Enum(TransportType, name="transport_type"),
+        Enum(TransportType, name="transport_type", values_callable=lambda obj: [e.value for e in obj]),
         default=TransportType.MOCK,
         nullable=False,
     )

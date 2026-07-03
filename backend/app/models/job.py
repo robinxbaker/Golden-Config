@@ -20,9 +20,14 @@ if TYPE_CHECKING:
 class Job(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     __tablename__ = "jobs"
 
-    type: Mapped[JobType] = mapped_column(Enum(JobType, name="job_type"), nullable=False)
+    type: Mapped[JobType] = mapped_column(
+        Enum(JobType, name="job_type", values_callable=lambda obj: [e.value for e in obj]),
+        nullable=False,
+    )
     status: Mapped[JobStatus] = mapped_column(
-        Enum(JobStatus, name="job_status"), default=JobStatus.PENDING, nullable=False
+        Enum(JobStatus, name="job_status", values_callable=lambda obj: [e.value for e in obj]),
+        default=JobStatus.PENDING,
+        nullable=False,
     )
 
     device_id: Mapped[uuid.UUID] = mapped_column(

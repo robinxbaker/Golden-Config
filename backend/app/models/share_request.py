@@ -33,7 +33,9 @@ class ShareRequest(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     )
 
     status: Mapped[ShareStatus] = mapped_column(
-        Enum(ShareStatus, name="share_status"), default=ShareStatus.PENDING, nullable=False
+        Enum(ShareStatus, name="share_status", values_callable=lambda obj: [e.value for e in obj]),
+        default=ShareStatus.PENDING,
+        nullable=False,
     )
     message: Mapped[str | None] = mapped_column(String(512), nullable=True)
     responded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

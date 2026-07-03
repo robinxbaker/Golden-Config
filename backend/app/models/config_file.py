@@ -26,7 +26,9 @@ class ConfigFile(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     # Driver key this config is valid for; gates which devices it can be applied to.
     platform: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
     format: Mapped[ConfigFormat] = mapped_column(
-        Enum(ConfigFormat, name="config_format"), default=ConfigFormat.CLI, nullable=False
+        Enum(ConfigFormat, name="config_format", values_callable=lambda obj: [e.value for e in obj]),
+        default=ConfigFormat.CLI,
+        nullable=False,
     )
     content: Mapped[str] = mapped_column(Text, nullable=False)
     version: Mapped[int] = mapped_column(Integer, default=1, nullable=False)

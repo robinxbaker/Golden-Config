@@ -83,7 +83,7 @@ nano .env
 Fill in, at minimum:
 - `DOMAIN=demo.yourdomain.com`
 - `ACME_EMAIL=you@example.com`
-- `BACKEND_CORS_ORIGINS=https://demo.yourdomain.com`
+- `BACKEND_CORS_ORIGINS=["https://demo.yourdomain.com"]` (JSON array)
 - `SECRET_KEY=...` and `CREDENTIAL_ENCRYPTION_KEY=...` (generated above)
 - a strong `POSTGRES_PASSWORD`
 - a demo `FIRST_ADMIN_PASSWORD` (this is the interviewer's login)
